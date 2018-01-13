@@ -1,7 +1,7 @@
 {
-  "name": "node-js-getting-started",
-  "version": "0.3.0",
-  "description": "A sample Node.js app using Express 4",
+  "name": "My Crypto Dashboard",
+  "version": "0.1.0",
+  "description": "Manage your cryptos",
   "engines": {
     "node": "8.9.1"
   },

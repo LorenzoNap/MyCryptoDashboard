@@ -29,7 +29,7 @@ app.controller('MainController', function ($scope, $http) {
 
         return $http({
             method: 'GET',
-            url: ' https://api.coinmarketcap.com/v1/ticker/'
+            url: '/coinList?name='+val
         }).then(function successCallback(response) {
             $scope.arrayFornitori = response.data;
             return response.data.map(function (item) {

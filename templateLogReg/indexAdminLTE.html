@@ -80,10 +80,11 @@
                                name="aggiudicatario"
                                id="fornitoreInput"
                                placeholder="Digita il nome dell'azienda"
+                               typeahead-min-length="3"
                                ng-model="myCoin.moneta"
                                placeholder="Digita il nome dell'aggiudicatario"
                                typeahead-editable="false"
-                               uib-typeahead="fornitore.symbol as fornitore.name for fornitore in getFornitori($viewValue)"
+                               uib-typeahead="fornitore.Symbol as fornitore.CoinName for fornitore in getFornitori($viewValue)"
                                typeahead-loading="loadingLocations"
                                typeahead-no-results="noResults"
                                typeaheadTrigger

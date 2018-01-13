@@ -3,9 +3,11 @@ var router = express.Router();
 var User = require('../models/user');
 var path = require("path");
 var request = require('request');
+var url = require('url');
 
 
 var Crypto = require('../models/crypto');
+var Coins = require('../models/coin');
 
 // GET route for reading data
 router.get('/', function (req, res, next) {
@@ -99,9 +101,19 @@ router.get('/logout', function (req, res, next) {
 });
 
 router.get('/coinList', function (req, res) {
+    // +req.url.split("name=")[1]+
+    var re = new RegExp(".*"+req.url.split("name=")[1]+"*/i");
 
-    request("https://www.cryptocompare.com/api/data/coinlist/", function (error, response, body) {
-        return res.send(JSON.parse(response.body).Data)
+    var expression_one = "/.*" + req.url.split("name=")[1]+".*/i";
+    var expression_two = req.url.split("name=")[1];
+    var expression_three = new RegExp(expression_one);
+
+    var searchPhrase = "MT";
+    var regularExpression = new RegExp(".*" + req.url.split("name=")[1] + ".*", "i");
+
+    Coins.find({ $or:[ {"Symbol":  { $regex : regularExpression } }, {"CoinName":{ $regex :regularExpression }} ]}, function (err, coins){
+        if (err) return handleError(err);
+        res.send(coins)
     })
 })
 
@@ -184,65 +196,6 @@ router.get('/cryptos', function (req, res) {
 
         res.json(cryptos)
 
-
-        // var counter = 0;
-        // var returnJson = []
-        //
-        // cryptos.forEach(function (crypto, value) {
-        //
-        //
-        //
-        //
-        //     request("https://min-api.cryptocompare.com/data/price?fsym=" + crypto.moneta + "&tsyms=USD,EUR", function (error, response, body) {
-        //
-        //         var response = JSON.parse(response.body);
-        //
-        //         var json = crypto.toJSON();
-        //         json.valoreEur = parseFloat(Math.round(response.EUR * crypto.quantita * 100) / 100).toFixed(2)
-        //         json.valoreUsd = parseFloat(Math.round(response.USD * crypto.quantita * 100) / 100).toFixed(2)
-        //
-        //         returnJson.push(json)
-        //
-        //         var monetaID = "";
-        //         switch (crypto.moneta) {
-        //             case "BTC":
-        //                 monetaID = "bitcoin"
-        //                 break;
-        //             case "LTC":
-        //                 monetaID = "litecoin"
-        //                 break;
-        //             case "XMR":
-        //                 monetaID = "monero";
-        //                 break;
-        //             case "ETH":
-        //                 monetaID = "ethereum"
-        //                 break;
-        //             default:
-        //                 monetaID = "bitcoin"
-        //         }
-        //
-        //
-        //
-        //
-        //         request("https://api.coinmarketcap.com/v1/ticker/" + monetaID + "/?convert=EUR", function (error, response, body) {
-        //
-        //             counter++;
-        //
-        //             var result = JSON.parse(response.body)
-        //
-        //             json.hours = result[0].percent_change_24h
-        //
-        //             if(counter == cryptos.length){
-        //                 res.json(returnJson)
-        //             }
-        //
-        //
-        //         })
-        //
-        //
-        //     })
-        //
-        // })
 
     })
 

@@ -1,14 +1,15 @@
 var app = angular.module('app', [ 'ui.bootstrap']);
 
 
-app.directive('stringToNumber', function () {
+app.directive('stringToNumber', function ( $filter) {
     return {
         require: 'ngModel',
         link: function (scope, element, attrs, ngModel) {
             ngModel.$parsers.push(function (value) {
                 return '' + value;
             });
-            ngModel.$formatters.push(function (value) {
+            ngModel.$formatters.push(function (value, $filter) {
+
                 return parseFloat(value);
             });
         }
@@ -24,6 +25,10 @@ app.controller('MainController', function ($scope, $http) {
         updateCharPrice($scope.currentMoneta)
         updateChartPircePie();
     });
+    // $scope.onSelect = function ($item, $model, $label) {
+    //     $model.img =  $item.ImageUrl;
+    // };
+
 
     $scope.getFornitori = function (val) {
 
@@ -51,16 +56,7 @@ app.controller('MainController', function ($scope, $http) {
     $scope.aggiungiMoneteDialog = function () {
 
         $("#addCryptoDialog").modal("show")
-        $scope.states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California',
-            'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii',
-            'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
-            'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
-            'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
-            'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
-            'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island',
-            'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
-            'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
-        ]
+        $scope.myCoinListTemp = angular.copy($scope.myCoinList)
 
     }
 
@@ -76,7 +72,7 @@ app.controller('MainController', function ($scope, $http) {
     $scope.myCoinList = []
 
     $scope.addNew = function (personalDetail) {
-        $scope.myCoinList.push({
+        $scope.myCoinListTemp.push({
             'moneta': "",
             'quantita': 0,
             'investimento': 0
@@ -86,12 +82,12 @@ app.controller('MainController', function ($scope, $http) {
     $scope.remove = function () {
         var newDataList = [];
         $scope.selectedAll = false;
-        angular.forEach($scope.myCoinList, function (selected) {
+        angular.forEach($scope.myCoinListTemp, function (selected) {
             if (!selected.selected) {
                 newDataList.push(selected);
             }
         });
-        $scope.myCoinList = newDataList;
+        $scope.myCoinListTemp = newDataList;
     };
 
 
@@ -101,17 +97,35 @@ app.controller('MainController', function ($scope, $http) {
         } else {
             $scope.selectedAll = false;
         }
-        angular.forEach($scope.myCoinList, function (personalDetail) {
+        angular.forEach($scope.myCoinListTemp, function (personalDetail) {
             personalDetail.selected = $scope.selectedAll;
         });
     };
 
     $scope.saveMyCrypto = function () {
 
-        $http.post('/saveMyCrypto', JSON.stringify($scope.myCoinList)).success(function (response) {
+         if($("#formSaveMyCoin")[0].checkValidity()){
 
-            $scope.coinList = response.data
-        })
+             $http.post('/saveMyCrypto', JSON.stringify($scope.myCoinListTemp)).success(function (response) {
+                 if(response){
+                     $scope.myCoinList = $scope.myCoinListTemp
+                     $("#addCryptoDialog").modal("hide")
+                     //ricarica le pagine
+                     updateCryptos()
+
+
+
+                 } else {
+
+                 }
+
+             })
+
+         } else {
+             alert("attenzione controlla tutti i campi")
+         }
+
+
 
     }
 
@@ -161,10 +175,10 @@ app.controller('MainController', function ($scope, $http) {
 
                     var perc = Math.round(((Number.parseFloat($scope.myCoinList[index].quantita) * 100) / totMonete) * 100) / 100
 
-                    $scope.pieData.push({y: perc, name: moneta.moneta});
+                    $scope.pieData.push({y: perc, name: moneta.moneta.Symbol});
 
                     $.ajax({
-                        url: "https://min-api.cryptocompare.com/data/price?fsym=" + $scope.myCoinList[index].moneta + "&tsyms=USD,EUR",
+                        url: "https://min-api.cryptocompare.com/data/price?fsym=" + $scope.myCoinList[index].moneta.Symbol + "&tsyms=USD,EUR",
                         success: function (resultMoneta) {
 
                             $scope.cryptosValuesMoney.eur = $scope.cryptosValuesMoney.eur + parseFloat(Math.round(resultMoneta.EUR * moneta.quantita * 100) / 100);
@@ -185,6 +199,9 @@ app.controller('MainController', function ($scope, $http) {
 
                                     var diff = $scope.cryptosValuesMoney.eur - $scope.cryptosValuesMoney.totale;
                                     var perc = parseFloat((diff * 100) / (parseFloat(Math.round($scope.cryptosValuesMoney.totale * 100) / 100))).toFixed(2)
+                                    if(perc == 'Infinity'){
+                                        perc = 100
+                                    }
 
                                     $scope.cryptosValuesMoney.profitLost = diff.toFixed(2)
                                     $scope.cryptosValuesMoney.profitLostPerc = perc

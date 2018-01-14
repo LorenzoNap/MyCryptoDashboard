@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>AdminLTE 2 | Dashboard</title>
+  <title>My Crypto Dashboard</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.7 -->
@@ -40,11 +40,20 @@
 </head>
 <body class="hold-transition skin-blue layout-top-nav" ng-controller="MainController">
 
+<script type="text/ng-template" id="customTemplate.html">
+  <a>
+    <img ng-src="https://www.cryptocompare.com{{match.model.ImageUrl}}" width="32">
+    <span ng-bind-html="match.model.CoinName | uibTypeaheadHighlight:query"></span>
+    <span ng-bind-html=" (match.model.Symbol) | uibTypeaheadHighlight:query"></span>
+  </a>
+</script>
+
+
 <div class="modal" id="addCryptoDialog">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Modal title</h5>
+        <h5 class="modal-title">Modifica Monete</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -58,7 +67,7 @@
           <!-- /.box-header -->
           <div class="box-body">
             <div class="table-responsive">
-              <form ng-submit="addNew()">
+              <form ng-submit="addNew()" id="formSaveMyCoin">
                 <table class="table no-margin">
                   <thead>
                   <tr>
@@ -69,7 +78,7 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr ng-repeat="myCoin in myCoinList">
+                  <tr ng-repeat="myCoin in myCoinListTemp">
                     <td>
                       <input type="checkbox" ng-model="myCoin.selected"/>
                     </td>
@@ -84,11 +93,12 @@
                                ng-model="myCoin.moneta"
                                placeholder="Digita il nome dell'aggiudicatario"
                                typeahead-editable="false"
-                               uib-typeahead="fornitore.Symbol as fornitore.CoinName for fornitore in getFornitori($viewValue)"
+                               typeahead-template-url="customTemplate.html"
+                               uib-typeahead="fornitore as fornitore.CoinName for fornitore in getFornitori($viewValue)"
                                typeahead-loading="loadingLocations"
                                typeahead-no-results="noResults"
                                typeaheadTrigger
-                               class="form-control">
+                               class="form-control" required>
                         <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
                         <div ng-show="noResults">
                           <i class="glyphicon glyphicon-remove"></i> Non sono stati trovati i risultati
@@ -96,14 +106,14 @@
                       </div>
                     </td>
                     <td>
-                      <input class="form-control" string-to-number ng-model="myCoin.quantita" required/></td>
+                      <input class="form-control" type="number" step="0.000000001" string-to-number ng-model="myCoin.quantita" required/></td>
                     <td>
-                      <input class="form-control" string-to-number ng-model="myCoin.investimento" required/></td>
+                      <input class="form-control" type="number" step="0.000000001" string-to-number ng-model="myCoin.investimento" required/></td>
                   </tr>
                   </tbody>
                 </table>
                 <div class="form-group">
-                  <input type="button" class="btn btn-danger pull-right" ng-click="remove()" value="Remove">
+                  <input type="button" style="margin-left: 5px" class="btn btn-danger pull-right" ng-click="remove()" value="Remove">
                   <input type="submit" class="btn btn-primary addnew pull-right" value="Add New">
                 </div>
               </form>
@@ -149,22 +159,41 @@
     <section class="content">
       <!-- Small boxes (Stat box) -->
       <div class="row" id="moneteInfoBoxRow">
-        <div class="col-md-3 col-sm-6 col-xs-12" ng-repeat="moneta in myCoinList">
+        <!--<div class="col-md-3 col-sm-6 col-xs-12" ng-repeat="moneta in myCoinList">-->
+          <!--<div class="info-box">-->
+            <!--<span class="info-box-icon"><img class="img-responsive" ng-src="https://www.cryptocompare.com{{moneta.moneta.ImageUrl}}"/> </span>-->
+
+            <!--<div class="info-box-content">-->
+              <!--<span class="info-box-text">{{moneta.moneta.Symbol}}</span>-->
+              <!--<span class="info-box-number">Quantita: {{moneta.quantita}}</span>-->
+              <!--&lt;!&ndash;<span class="info-box-number">Valore: {{moneta.quantita}}</span>&ndash;&gt;-->
+              <!--&lt;!&ndash;<span class="info-box-number">Quantita: {{moneta.investimento}}</span>&ndash;&gt;-->
+            <!--</div>-->
+            <!--&lt;!&ndash; /.info-box-content &ndash;&gt;-->
+          <!--</div>-->
+          <!--&lt;!&ndash; /.info-box &ndash;&gt;-->
+        <!--</div>-->
+        <!-- /.col -->
+        <!-- /.col -->
+        <div class="col-md-4" ng-repeat="moneta in myCoinList | orderBy:'-eur'">
           <div class="info-box">
-            <span class="info-box-icon"><img class="img-responsive" ng-src="{{moneta.img}}"/> </span>
+            <span class="info-box-icon"><img class="img-responsive" ng-src="https://www.cryptocompare.com{{moneta.moneta.ImageUrl}}"/></span>
 
             <div class="info-box-content">
-              <span class="info-box-text">{{moneta.moneta}}</span>
-              <span class="info-box-number">Quantita: {{moneta.quantita}}</span>
-              <!--<span class="info-box-number">Valore: {{moneta.quantita}}</span>-->
-              <!--<span class="info-box-number">Quantita: {{moneta.investimento}}</span>-->
+              <span class="info-box-text">{{moneta.moneta.Symbol}}</span>
+              <span class="info-box-number">Quantit&agrave;: {{moneta.quantita}}</span>
+
+              <div class="progress">
+                <div class="progress-bar" style="width: 0%"></div>
+              </div>
+              <span class="progress-description">
+                    Guadagno: {{moneta.eur | currency : '€' : 2}}
+                  </span>
             </div>
             <!-- /.info-box-content -->
           </div>
-          <!-- /.info-box -->
         </div>
-        <!-- /.col -->
-        <!-- /.col -->
+
 
         <!-- fix for small devices only -->
         <div class="clearfix visible-sm-block"></div>
@@ -210,7 +239,7 @@
                   </tfoot>
                   <tbody>
                   <tr ng-repeat="coinTable in myCoinList">
-                    <td><a href="pages/examples/invoice.html">{{coinTable.moneta}}</a></td>
+                    <td><a href="pages/examples/invoice.html">{{coinTable.moneta.Symbol}}</a></td>
                     <td>{{coinTable.quantita}}</td>
                     <td>{{coinTable.eur | currency : '€' : 2}}</td>
                     <td>{{coinTable.usd | currency : '$' : 2}}</td>
@@ -261,17 +290,17 @@
             <!-- Add the bg color to the header using any of the bg-* classes -->
             <div class="widget-user-header bg-blue">
               <div class="widget-user-image">
-                <img class="img-circle" src="../dist/img/user7-128x128.jpg" alt="User Avatar">
+                <img class="img-circle" src="../dist/img/cryptocurrency icon.png" alt="User Avatar">
               </div>
               <!-- /.widget-user-image -->
               <h3 class="widget-user-username">Riepilogo</h3>
-              <h5 class="widget-user-desc">sdasdasdasd</h5>
+              <h5 class="widget-user-desc">Perdite e guadagni</h5>
             </div>
             <div class="box-footer no-padding">
               <ul class="nav nav-stacked">
-                <li><a href="#">Investimento <span class="pull-right badge bg-blue ">{{cryptosValuesMoney.totale}}</span></a></li>
+                <li><a href="#">Investimento <span class="pull-right badge bg-blue my-label">{{cryptosValuesMoney.totale}}</span></a></li>
                 <li><a href="#">Guadagni <span class="pull-right badge bg-green my-label">{{cryptosValuesMoney.eur}}</span></a></li>
-                <li><a href="#">Profit Loss <span class="pull-right badge bg-red my-label">{{cryptosValuesMoney.profitLost}} / {{cryptosValuesMoney.profitLostPerc}}%</span></a></li>
+                <li><a href="#">Profit/Loss <span class="pull-right badge my-label" ng-class="{'bg-red' : cryptosValuesMoney.profitLost < 0, 'bg-green': cryptosValuesMoney.profitLost >= 0}">{{cryptosValuesMoney.profitLost}} / {{cryptosValuesMoney.profitLostPerc}}%</span></a></li>
               </ul>
             </div>
           </div>
@@ -301,7 +330,7 @@
 
                   <tbody>
                   <tr ng-repeat="coinTable in myCoinList">
-                    <td><a href="pages/examples/invoice.html">{{coinTable.moneta}}</a></td>
+                    <td><a href="pages/examples/invoice.html">{{coinTable.moneta.Symbol}}</a></td>
                     <td>{{coinTable.eurValue | currency : '€' : 2}}</td>
                     <td>{{coinTable.usdValue | currency : '$' : 2}}</td>
                     <td><span class="label my-label"  ng-class="{'label-danger':  coinTable.price24 < 0, 'label-info': coinTable.price24 > 0}">{{coinTable.price24}}</span>

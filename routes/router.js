@@ -158,26 +158,29 @@ router.get('/myCoinTable', function (req, res) {
 router.post('/saveMyCrypto', function (req, res) {
 
     if (req.body) {
-        console.log(req)
 
-        req.body.forEach(function (value, index) {
-            var crypto = {
-                moneta: req.body[index].moneta,
-                quantita: req.body[index].quantita,
-                investimento: req.body[index].investimento,
-                userId: req.session.userId,
-            }
+        //svuota prima tutte le monete
 
-            Crypto.create(crypto, function (error, user) {
-                if (error) {
-                    return next(error);
-                } else {
-                    // req.session.userId = user._id;
-                    // return res.redirect('/dashboard');
+        Crypto.remove({}, function (err) {
+            if (err) return handleError(err);
+            req.body.forEach(function (value, index) {
+                var crypto = {
+                    moneta: req.body[index].moneta,
+                    quantita: req.body[index].quantita,
+                    investimento: req.body[index].investimento,
+                    userId: req.session.userId,
                 }
-            });
-        })
 
+                Crypto.create(crypto, function (error, user) {
+                    if (error) {
+                        return next(error);
+                    } else {
+                        // req.session.userId = user._id;
+                        // return res.redirect('/dashboard');
+                    }
+                });
+            })
+        });
 
         return res.redirect('/dashboard');
 

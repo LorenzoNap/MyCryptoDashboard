@@ -1,12 +1,36 @@
 'use strict';
 
+
+var Coins = require('../models/coin');
+
+
 const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
+const coinSchema = mongoose.Schema({
+
+    "Id" : String,
+    "Url" : String,
+    "ImageUrl" : String,
+    "Name" : String,
+    "Symbol" : String,
+    "CoinName" : String,
+    "FullName" : String,
+    "Algorithm" : String,
+    "ProofType" : String,
+    "FullyPremined" : String,
+    "TotalCoinSupply" :String,
+    "PreMinedValue" : String,
+    "TotalCoinsFreeFloat" :String,
+    "SortOrder" : String,
+    "Sponsored" : Boolean
+});
+
+
 const cryptoSchema = mongoose.Schema({
 
-    moneta 			: String,
+    moneta 			: coinSchema,
     quantita		: String,
     investimento    : String,
     userId    : String,

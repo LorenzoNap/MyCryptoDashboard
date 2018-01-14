@@ -5,6 +5,7 @@ var mongoose = require('mongoose');
 var session = require('express-session');
 var url = require('url');
 
+var port = process.env.PORT || 5000
 
 //connect to MongoDB
 mongoose.connect('mongodb://root:root@ds235877.mlab.com:35877/cryptodb');
@@ -60,7 +61,7 @@ app.use(function (err, req, res, next) {
 
 
 // listen on port 3000
-app.listen(5000, function () {
+app.listen(port, function () {
     console.log('Express app listening on port 3000');
 });
 

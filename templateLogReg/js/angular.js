@@ -119,6 +119,16 @@ app.controller('MainController', function ($scope, $http) {
 
              $http.post('/saveMyCrypto', JSON.stringify($scope.myCoinListTemp)).success(function (response) {
                  if(response){
+
+                     $.notify({
+                         // options
+                         message: 'Le monete sono state salvate'
+                     },{
+                         // settings
+                         delay: 5000,
+                         type: 'success'
+                     })
+
                      $scope.myCoinList = $scope.myCoinListTemp
                      $("#addCryptoDialog").modal("hide")
                      //ricarica le pagine
@@ -127,13 +137,28 @@ app.controller('MainController', function ($scope, $http) {
 
 
                  } else {
-
+                     $.notify({
+                         // options
+                         message: 'Attenzione si è verificato un errore'
+                     },{
+                         // settings
+                         delay: 5000,
+                         type: 'danger'
+                     })
                  }
 
              })
 
          } else {
-             alert("attenzione controlla tutti i campi")
+             $.notify({
+                 // options
+                 message: 'Controlla tutti i campi'
+             },{
+                 // settings
+                 delay: 5000,
+                 z_index: 100000000,
+                 type: 'warning'
+             })
          }
 
 
@@ -171,6 +196,8 @@ app.controller('MainController', function ($scope, $http) {
 
                 if (response.length <= 0) {
                     $scope.haveCrypto = false;
+                    $("#myCoinGuadagnoTable").hide();
+                    $("#myCoinTableInfo").hide()
                 } else {
                     $scope.haveCrypto = true;
                     $scope.myCoinList = response
@@ -252,29 +279,15 @@ app.controller('MainController', function ($scope, $http) {
     function updateCoinInfoTable() {
 
         $("#myCoinTableInfo").show();
+        if($scope.myCoinList.length == 0){
+            $("#myCoinTableInfo").hide();
+
+        }
 
         $.each($scope.myCoinList, function (index, moneta) {
 
-            var monetaID = "";
-            switch (moneta.moneta) {
-                case "BTC":
-                    monetaID = "bitcoin"
-                    break;
-                case "LTC":
-                    monetaID = "litecoin"
-                    break;
-                case "XMR":
-                    monetaID = "monero";
-                    break;
-                case "ETH":
-                    monetaID = "ethereum"
-                    break;
-                default:
-                    monetaID = "bitcoin"
-            }
-
             $.ajax({
-                url: "https://api.coinmarketcap.com/v1/ticker/" + monetaID + "/?convert=EUR",
+                url: "https://api.coinmarketcap.com/v1/ticker/" + moneta.moneta.CoinName.toLowerCase() + "/?convert=EUR",
                 success: function (result) {
                     $scope.myCoinList[index].price24 = result[0].percent_change_24h
 
@@ -318,8 +331,80 @@ app.controller('MainController', function ($scope, $http) {
         chart.render();
     }
 
+    function updateChartHashRate(moneta) {
+
+        var url= "";
+        if(moneta == "BTC"){
+            url = "https://api.blockchain.info/pools?cors=true&timespan=48hours"
+        } else {
+
+        }
+
+
+        $.ajax({
+            url: "https://api.blockchain.info/pools?cors=true&timespan=48hours",
+            success: function (result) {
+
+                var data = [];
+                $.each(result, function (index, value) {
+
+                    data.push({y: value, name: index});
+
+                })
+
+                function SortByID(x,y) {
+                    return x.y - y.y;
+                }
+                data.sort(SortByID)
+
+                var chart = new CanvasJS.Chart("chartHashRateContainer", {
+                    exportEnabled: false,
+                    animationEnabled: true,
+                    width: $("#chartHashRate").width(),
+                    theme: "light2",
+                    // title: {
+                    //     text: "Percentuale monete"
+                    // },
+                    data: [{
+                        type: "pie",
+
+                        showInLegend: false,
+                        toolTipContent: "{name}: <strong>{y}%</strong>",
+                        indexLabel: "{name} - {y}%",
+                        dataPoints: data
+                    }]
+                });
+                chart.render();
+
+            }
+        })
+
+        var chart = new CanvasJS.Chart("chartContainerPie", {
+            exportEnabled: false,
+            animationEnabled: true,
+            width: $("#chartPricePie").width(),
+            theme: "light2",
+            // title: {
+            //     text: "Percentuale monete"
+            // },
+            data: [{
+                type: "pie",
+
+                showInLegend: false,
+                toolTipContent: "{name}: <strong>{y}%</strong>",
+                indexLabel: "{name} - {y}%",
+                dataPoints: $scope.pieData
+            }]
+        });
+        chart.render();
+    }
+
 
     function updateCharPrice(moneta) {
+
+
+        updateChartHashRate(moneta)
+
         $.ajax({
             url: "https://min-api.cryptocompare.com/data/histoday?fsym=" + moneta + "&tsym=USD&limit=60&aggregate=3&e=CCCAGG",
             success: function (result) {
@@ -331,6 +416,7 @@ app.controller('MainController', function ($scope, $http) {
                     var date = new Date(result.Data[index].time * 1000);
                     dataUSD.push({x: date, y: result.Data[index].close})
                 })
+
 
 
                 $.ajax({

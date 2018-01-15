@@ -147,7 +147,7 @@
     <section class="content-header">
       <h1>
         Dashboard
-        <small>Le tu monete</small>
+        <small>monete</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -217,7 +217,7 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-              <div class="table-responsive">
+              <div class="table-responsive" ng-show="myCoinList.length > 0">
                 <table class="table no-margin table-hover tableGuadagno">
                   <thead>
                   <tr>
@@ -250,7 +250,11 @@
                   </tbody>
                 </table>
               </div>
-              <!-- /.table-responsive -->
+              <div class="callout callout-warning" ng-show="myCoinList.length == 0">
+                <h4>Attenzione!</h4>
+
+                <p>Non ci sono monete presenti nel tuo account.</p>
+              </div>
             </div>
             <!-- /.box-body -->
             <div class="box-footer clearfix">
@@ -298,8 +302,8 @@
             </div>
             <div class="box-footer no-padding">
               <ul class="nav nav-stacked">
-                <li><a href="#">Investimento <span class="pull-right badge bg-blue my-label">{{cryptosValuesMoney.totale}}</span></a></li>
-                <li><a href="#">Guadagni <span class="pull-right badge bg-green my-label">{{cryptosValuesMoney.eur}}</span></a></li>
+                <li><a href="#">Investimento <span class="pull-right badge bg-blue my-label">{{cryptosValuesMoney.totale | currency : '€' : 2}}</span></a></li>
+                <li><a href="#">Guadagni <span class="pull-right badge bg-green my-label">{{cryptosValuesMoney.eur | currency : '€' : 2}}</span></a></li>
                 <li><a href="#">Profit/Loss <span class="pull-right badge my-label" ng-class="{'bg-red' : cryptosValuesMoney.profitLost < 0, 'bg-green': cryptosValuesMoney.profitLost >= 0}">{{cryptosValuesMoney.profitLost}} / {{cryptosValuesMoney.profitLostPerc}}%</span></a></li>
               </ul>
             </div>
@@ -374,6 +378,27 @@
             </div>
             <!-- /.box-body -->
           </div>
+
+
+          <div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">HashRate Distribution</h3>
+
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <div class="box-body">
+              <div class="chart" id="chartHashRate">
+                <div id="chartHashRateContainer" style="height: 300px"></div>
+              </div>
+            </div>
+            <!-- /.box-body -->
+          </div>
+
+
           <!-- /.box -->
 
         </section>
@@ -637,10 +662,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.min.js"></script>
 
 <script src='/js/angular.js'></script>
+<script src='/js/boostrap-notify.js'></script>
 
 
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-
 
 
 </body>

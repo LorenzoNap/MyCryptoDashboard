@@ -25,8 +25,7 @@ const coinSchema = mongoose.Schema({
 
 
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://root:root@ds235877.mlab.com:35877/cryptodb');
-mongoose.set('debug', true);
+mongoose.createConnection('mongodb://root:root@ds235877.mlab.com:35877/cryptodb',  { useMongoClient: true });
 
 
 module.exports = mongoose.model('coins', coinSchema);

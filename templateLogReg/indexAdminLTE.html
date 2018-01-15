@@ -218,7 +218,7 @@
             <!-- /.box-header -->
             <div class="box-body">
               <div class="table-responsive">
-                <table class="table no-margin">
+                <table class="table no-margin table-hover tableGuadagno">
                   <thead>
                   <tr>
                     <th>Moneta</th>
@@ -229,7 +229,7 @@
                   </tr>
                   </thead>
                   <tfoot>
-                  <tr>
+                  <tr >
                     <th></th>
                     <th></th>
                     <th><span class="label label-success my-label">{{cryptosValuesMoney.eur | currency : '€' : 2}}</span></th>
@@ -239,7 +239,7 @@
                   </tfoot>
                   <tbody>
                   <tr ng-repeat="coinTable in myCoinList">
-                    <td><a href="pages/examples/invoice.html">{{coinTable.moneta.Symbol}}</a></td>
+                    <td><a  href="#" ng-click="updateChart(coinTable.moneta.Symbol)">{{coinTable.moneta.Symbol}}</a></td>
                     <td>{{coinTable.quantita}}</td>
                     <td>{{coinTable.eur | currency : '€' : 2}}</td>
                     <td>{{coinTable.usd | currency : '$' : 2}}</td>
@@ -627,7 +627,6 @@
 <!-- AdminLTE for demo purposes -->
 <script src="dist/js/demo.js"></script>
 
-<script src="dist/js/custom.js"></script>
 
 
 <script src='/js/app.js'></script>

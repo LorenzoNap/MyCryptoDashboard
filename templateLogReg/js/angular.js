@@ -25,9 +25,20 @@ app.controller('MainController', function ($scope, $http) {
         updateCharPrice($scope.currentMoneta)
         updateChartPircePie();
     });
-    // $scope.onSelect = function ($item, $model, $label) {
-    //     $model.img =  $item.ImageUrl;
-    // };
+
+    $scope.user = {};
+
+    $http({
+        method: 'GET',
+        url: '/myUser'
+    }).then(function successCallback(response) {
+        $scope.user = response.data;
+
+    }, function errorCallback(response) {
+        console.log(response);
+    });
+
+
 
 
     $scope.getFornitori = function (val) {
@@ -129,7 +140,10 @@ app.controller('MainController', function ($scope, $http) {
 
     }
 
-
+    $scope.updateChart = function (moneta) {
+        $scope.currentMoneta = moneta
+        updateCharPrice(moneta);
+    }
 
 
 
@@ -161,6 +175,11 @@ app.controller('MainController', function ($scope, $http) {
                     $scope.haveCrypto = true;
                     $scope.myCoinList = response
                 }
+
+                $('.tableGuadagno > tbody > tr').on('click', function(){
+                    var value =$(this).closest('tr').children('td:first').text();
+                    updateCharPrice(value)
+                });
 
                 $scope.pieData = [];
 

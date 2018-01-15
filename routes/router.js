@@ -189,6 +189,18 @@ router.post('/saveMyCrypto', function (req, res) {
 
 })
 
+router.get('/myUser', function (req, res) {
+
+    User.findById(req.session.userId, function (err, user) {
+
+        if (err) return handleError(err);
+        res.json(user)
+
+    })
+
+})
+
+
 
 router.get('/cryptos', function (req, res) {
 

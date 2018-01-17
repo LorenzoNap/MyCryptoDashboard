@@ -170,14 +170,25 @@ app.controller('MainController', function ($scope, $http) {
         updateCharPrice(moneta);
     }
 
+    $scope.calssificaCoin = function classificaCoin(){
+
+        $.ajax({
+            url: 'https://api.coinmarketcap.com/v1/ticker/?limit=10',
+            success: function (response) {
+                $scope.classificaCoinMonete = response;
+            }
+        })
 
 
+    };
 
     updateCryptos();
 
     function updateCryptos() {
 
         $("#myCoinGuadagnoTable").show();
+
+        $scope.calssificaCoin();
 
 
         $scope.cryptosValuesMoney = {eur: 0, usd: 0, totale: 0};
@@ -307,6 +318,7 @@ app.controller('MainController', function ($scope, $http) {
 
 
     }
+
 
 
     function updateChartPircePie() {

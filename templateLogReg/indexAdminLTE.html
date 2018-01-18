@@ -281,11 +281,12 @@
             </div>
             <div class="box-body">
               <div class="table-responsive">
-                <table class="table no-margin">
+                <table class="table no-margin" id="example">
                   <thead>
                   <tr>
                     <th>Moneta</th>
                     <th>Valore $</th>
+                    <th>Market Cap $</th>
                     <th>Variazione 1h </th>
                     <th>Variazione 24 </th>
                     <th>Variazione 7d </th>
@@ -293,14 +294,14 @@
                   </thead>
 
                   <tbody>
-                  <tr ng-repeat="coinTable in classificaCoinMonete">
-                    <td>{{coinTable.name}} ({{coinTable.symbol}})</td>
-                    <td>{{coinTable.price_usd | currency : '$' : 2}}</td>
-                    <!--<td>{{coinTable.24h_volume_usd }}</td>-->
-                    <td><p  ng-class="{'text-red' : {{coinTable.percent_change_1h}} < 0, 'text-green': {{coinTable.percent_change_1h}} >= 0 }">{{coinTable.percent_change_1h }} %</p></td>
-                    <td><p  ng-class="{'text-red' : {{coinTable.percent_change_24h}} < 0, 'text-green': {{coinTable.percent_change_24h}} >= 0 }">{{coinTable.percent_change_24h }} %</p></td>
-                    <td><p  ng-class="{'text-red' : {{coinTable.percent_change_7d}} < 0, 'text-green': {{coinTable.percent_change_7d}} >= 0 }">{{coinTable.percent_change_7d }} %</p></td>
-                  </tr>
+                  <!--<tr ng-repeat="coinTable in classificaCoinMonete">-->
+                    <!--<td>{{coinTable.name}} ({{coinTable.symbol}})</td>-->
+                    <!--<td>{{coinTable.price_usd | currency : '$' : 2}}</td>-->
+                    <!--&lt;!&ndash;<td>{{coinTable.24h_volume_usd }}</td>&ndash;&gt;-->
+                    <!--<td><p  ng-class="{'text-red' : {{coinTable.percent_change_1h}} < 0, 'text-green': {{coinTable.percent_change_1h}} >= 0 }">{{coinTable.percent_change_1h }} %</p></td>-->
+                    <!--<td><p  ng-class="{'text-red' : {{coinTable.percent_change_24h}} < 0, 'text-green': {{coinTable.percent_change_24h}} >= 0 }">{{coinTable.percent_change_24h }} %</p></td>-->
+                    <!--<td><p  ng-class="{'text-red' : {{coinTable.percent_change_7d}} < 0, 'text-green': {{coinTable.percent_change_7d}} >= 0 }">{{coinTable.percent_change_7d }} %</p></td>-->
+                  <!--</tr>-->
                   </tbody>
                 </table>
               </div>
@@ -689,6 +690,12 @@
 
 
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.css"/>
+
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>
+
 
 
 </body>

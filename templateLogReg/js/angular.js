@@ -1,5 +1,95 @@
 var app = angular.module('app', ['ui.bootstrap']);
 
+$( document ).ready(function() {
+    var options2 = {style: 'currency', currency: 'USD'};
+    var numberFormat2 = new Intl.NumberFormat('en-US', options2)
+
+    $('#example').DataTable({
+        "ajax": {
+            "url": "https://api.coinmarketcap.com/v1/ticker/",
+            "dataSrc": ""
+        },
+        "order": [[1, "desc"]],
+        "columns": [
+            {
+                "data": "name",
+                "render": function (data, type, row, meta) {
+                    return data + " (" + row.symbol + ")";
+                }
+            },
+            {
+                "data": "price_usd",
+                "render": function (data, type, row, meta) {
+
+                    return numberFormat2.format(data);
+                }
+            },
+            {
+                "data": "market_cap_usd",
+                "render": function (data, type, row, meta) {
+
+                    return numberFormat2.format(data);
+                }
+            },
+            {
+                "data": "percent_change_1h",
+                "render": function (data, type, row, meta) {
+                    if (data >= 0) {
+                        return '<p class="text-green">' + data + '%</p>'
+                    } else {
+                        return '<p class="text-red">' + data + '%</p>'
+
+                    }
+                }
+            },
+            {
+                "data": "percent_change_24h",
+                "render": function (data, type, row, meta) {
+                    if (data >= 0) {
+                        return '<p class="text-green">' + data + '%</p>'
+                    } else {
+                        return '<p class="text-red">' + data + '%</p>'
+
+                    }
+                }
+            },
+            {
+                "data": "percent_change_7d",
+                "render": function (data, type, row, meta) {
+                    if (data >= 0) {
+                        return '<p class="text-green">' + data + '%</p>'
+                    } else {
+                        return '<p class="text-red">' + data + '%</p>'
+
+                    }
+                }
+            },
+
+        ],
+        "columnDefs": [{
+            "targets": 0,
+            "data": function (row, type, val, meta) {
+                if (type === 'set') {
+                    row.price = val;
+                    // Store the computed display and filter values for efficiency
+                    row.price_display = val == "" ? "" : "$" + numberFormat(val);
+                    row.price_filter = val == "" ? "" : "$" + numberFormat(val) + " " + val;
+                    return;
+                }
+                else if (type === 'display') {
+                    return row.price_display;
+                }
+                else if (type === 'filter') {
+                    return row.price_filter;
+                }
+                // 'sort', 'type' and undefined all just use the integer
+                return row.price;
+            }
+        }]
+    });
+});
+
+
 
 app.directive('stringToNumber', function ($filter) {
     return {
@@ -57,6 +147,7 @@ app.controller('MainController', function ($scope, $http) {
     $scope.coinList = [];
     $scope.currentMoneta = "BTC";
     $scope.pieData = [];
+
 
     $scope.cryptosValuesMoney = {eur: 0, usd: 0, totale: 0};
 
@@ -164,105 +255,12 @@ app.controller('MainController', function ($scope, $http) {
         updateCharPrice(moneta);
     }
 
-    $scope.calssificaCoin = function classificaCoin() {
-
-        var options2 = {style: 'currency', currency: 'USD'};
-        var numberFormat2 = new Intl.NumberFormat('en-US', options2)
-
-        $('#example').DataTable({
-            "ajax": {
-                "url": "https://api.coinmarketcap.com/v1/ticker/",
-                "dataSrc": ""
-            },
-            "order": [[1, "desc"]],
-            "columns": [
-                {
-                    "data": "name",
-                    "render": function (data, type, row, meta) {
-                        return data + " (" + row.symbol + ")";
-                    }
-                },
-                {
-                    "data": "price_usd",
-                    "render": function (data, type, row, meta) {
-
-                        return numberFormat2.format(data);
-                    }
-                },
-                {
-                    "data": "market_cap_usd",
-                    "render": function (data, type, row, meta) {
-
-                        return numberFormat2.format(data);
-                    }
-                },
-                {
-                    "data": "percent_change_1h",
-                    "render": function (data, type, row, meta) {
-                        if (data >= 0) {
-                            return '<p class="text-green">' + data + '%</p>'
-                        } else {
-                            return '<p class="text-red">' + data + '%</p>'
-
-                        }
-                    }
-                },
-                {
-                    "data": "percent_change_24h",
-                    "render": function (data, type, row, meta) {
-                        if (data >= 0) {
-                            return '<p class="text-green">' + data + '%</p>'
-                        } else {
-                            return '<p class="text-red">' + data + '%</p>'
-
-                        }
-                    }
-                },
-                {
-                    "data": "percent_change_7d",
-                    "render": function (data, type, row, meta) {
-                        if (data >= 0) {
-                            return '<p class="text-green">' + data + '%</p>'
-                        } else {
-                            return '<p class="text-red">' + data + '%</p>'
-
-                        }
-                    }
-                },
-
-            ],
-            "columnDefs": [{
-                "targets": 0,
-                "data": function (row, type, val, meta) {
-                    if (type === 'set') {
-                        row.price = val;
-                        // Store the computed display and filter values for efficiency
-                        row.price_display = val == "" ? "" : "$" + numberFormat(val);
-                        row.price_filter = val == "" ? "" : "$" + numberFormat(val) + " " + val;
-                        return;
-                    }
-                    else if (type === 'display') {
-                        return row.price_display;
-                    }
-                    else if (type === 'filter') {
-                        return row.price_filter;
-                    }
-                    // 'sort', 'type' and undefined all just use the integer
-                    return row.price;
-                }
-            }]
-        });
-
-
-    };
-
     updateCryptos();
 
     function updateCryptos() {
 
         $("#myCoinGuadagnoTable").show();
 
-        $scope.calssificaCoin();
 
 
         $scope.cryptosValuesMoney = {eur: 0, usd: 0, totale: 0};

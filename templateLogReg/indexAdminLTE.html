@@ -159,21 +159,26 @@
     <section class="content">
       <!-- Small boxes (Stat box) -->
       <div class="row" id="moneteInfoBoxRow">
+
+
+
         <div class="col-md-4" ng-repeat="moneta in myCoinList | orderBy:'-eur'">
           <div class="info-box">
-            <span class="info-box-icon"><img class="img-responsive" ng-src="https://www.cryptocompare.com{{moneta.moneta.ImageUrl}}"/></span>
 
-            <div class="info-box-content">
-              <span class="info-box-text">{{moneta.moneta.Symbol}}</span>
-              <span class="info-box-number">Quantit&agrave;: {{moneta.quantita}}</span>
+            <div class="coinmarketcap-currency-widget" ng-attr-data-currency="{{moneta.moneta.CoinName | lowercase | replaceSapce}}" data-base="EUR" data-secondary="USD" data-ticker="true" data-rank="false" data-marketcap="false" data-volume="false" data-stats="USD" data-statsticker="false"></div>
+            <!--<span class="info-box-icon"><img class="img-responsive" ng-src="https://www.cryptocompare.com{{moneta.moneta.ImageUrl}}"/></span>-->
 
-              <div class="progress">
-                <div class="progress-bar" style="width: 0%"></div>
-              </div>
-              <span class="progress-description">
-                    Guadagno: {{moneta.eur | currency : '€' : 2}}
-                  </span>
-            </div>
+            <!--<div class="info-box-content">-->
+              <!--<span class="info-box-text">{{moneta.moneta.Symbol}}</span>-->
+              <!--<span class="info-box-number">Quantit&agrave;: {{moneta.quantita}}</span>-->
+
+              <!--<div class="progress">-->
+                <!--<div class="progress-bar" style="width: 0%"></div>-->
+              <!--</div>-->
+              <!--<span class="progress-description">-->
+                    <!--Guadagno: {{moneta.eur | currency : '€' : 2}}-->
+                  <!--</span>-->
+            <!--</div>-->
             <!-- /.info-box-content -->
           </div>
         </div>
@@ -696,6 +701,7 @@
 
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>
 
+<script src='/js/currency.js'></script>
 
 
 </body>

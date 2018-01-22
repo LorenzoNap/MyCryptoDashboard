@@ -91,6 +91,12 @@ $( document ).ready(function() {
 
 
 
+app.filter('replaceSapce', function () {
+    return function (value) {
+        return value.replace(' ', '-');
+    };
+});
+
 app.directive('stringToNumber', function ($filter) {
     return {
         require: 'ngModel',
@@ -110,7 +116,6 @@ app.directive('stringToNumber', function ($filter) {
 app.controller('MainController', function ($scope, $http) {
 
     $(window).resize(function () {
-        console.log("Handler for .resize() called.")
         updateCharPrice($scope.currentMoneta)
         updateChartPircePie();
     });
@@ -370,7 +375,7 @@ app.controller('MainController', function ($scope, $http) {
         $.each($scope.myCoinList, function (index, moneta) {
 
             $.ajax({
-                url: "https://api.coinmarketcap.com/v1/ticker/" + moneta.moneta.CoinName.toLowerCase() + "/?convert=EUR",
+                url: "https://api.coinmarketcap.com/v1/ticker/" + moneta.moneta.CoinName.toLowerCase().replace(" ", "-") + "/?convert=EUR",
                 success: function (result) {
                     $scope.myCoinList[index].price24 = result[0].percent_change_24h
 

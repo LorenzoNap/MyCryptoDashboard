@@ -21,7 +21,6 @@ app.directive('stringToNumber', function ( $filter) {
 app.controller('MainController', function ($scope, $http) {
 
     $(window).resize(function () {
-        console.log("Handler for .resize() called.")
         updateCharPrice($scope.currentMoneta)
         updateChartPircePie();
     });
@@ -190,9 +189,7 @@ app.controller('MainController', function ($scope, $http) {
         $("#lastUpdate").html("Last update at " + now.toLocaleString("it-IT"));
 
 
-        $.ajax({
-            url: "/cryptos",
-            success: function (response) {
+        $http.get("/cryptos").success(function (response) {
 
                 if (response.length <= 0) {
                     $scope.haveCrypto = false;
@@ -223,29 +220,27 @@ app.controller('MainController', function ($scope, $http) {
 
                     $scope.pieData.push({y: perc, name: moneta.moneta.Symbol});
 
-                    $.ajax({
-                        url: "https://min-api.cryptocompare.com/data/price?fsym=" + $scope.myCoinList[index].moneta.Symbol + "&tsyms=USD,EUR",
-                        success: function (resultMoneta) {
+                    $http.get("https://min-api.cryptocompare.com/data/price?fsym=" + $scope.myCoinList[index].moneta.Symbol + "&tsyms=USD,EUR").
+                        success(function (resultMoneta) {
 
                             $scope.cryptosValuesMoney.eur = $scope.cryptosValuesMoney.eur + parseFloat(Math.round(resultMoneta.EUR * moneta.quantita * 100) / 100);
                             $scope.cryptosValuesMoney.usd = $scope.cryptosValuesMoney.usd + parseFloat(Math.round(resultMoneta.USD * moneta.quantita * 100) / 100);
                             $scope.cryptosValuesMoney.totale = $scope.cryptosValuesMoney.totale + parseFloat(moneta.investimento);
 
 
-                            $scope.myCoinList[index].eur = parseFloat(Math.round(resultMoneta.EUR * moneta.quantita * 100) / 100)
-                            $scope.myCoinList[index].usd = parseFloat(Math.round(resultMoneta.USD * moneta.quantita * 100) / 100)
+                            $scope.myCoinList[index].eur = parseFloat(Math.round(resultMoneta.EUR * moneta.quantita * 100) / 100);
+                            $scope.myCoinList[index].usd = parseFloat(Math.round(resultMoneta.USD * moneta.quantita * 100) / 100);
 
-                            $scope.myCoinList[index].eurValue = parseFloat(resultMoneta.EUR)
-                            $scope.myCoinList[index].usdValue = parseFloat(resultMoneta.USD)
+                            $scope.myCoinList[index].eurValue = parseFloat(resultMoneta.EUR);
+                            $scope.myCoinList[index].usdValue = parseFloat(resultMoneta.USD);
 
-                            $scope.$apply()
 
-                            if (index == $scope.myCoinList.length - 1) {
+                            if (index === $scope.myCoinList.length - 1) {
                                 if (!isNaN($scope.cryptosValuesMoney.eur) && !isNaN($scope.cryptosValuesMoney.totale)) {
 
                                     var diff = $scope.cryptosValuesMoney.eur - $scope.cryptosValuesMoney.totale;
                                     var perc = parseFloat((diff * 100) / (parseFloat(Math.round($scope.cryptosValuesMoney.totale * 100) / 100))).toFixed(2)
-                                    if(perc == 'Infinity'){
+                                    if(perc === 'Infinity'){
                                         perc = 100
                                     }
 
@@ -257,22 +252,18 @@ app.controller('MainController', function ($scope, $http) {
                                 $("#myCoinGuadagnoTable").hide();
                             }
 
-                        },
-                        error: function (err) {
+                        }).error( function (err) {
                             alert(err)
                             $("#myCoinGuadagnoTable").hide();
 
-                        }
+                        })
                     })
 
-                })
+                });
 
 
                 updateChartPircePie()
 
-
-            }
-        });
     }
 
 
@@ -286,22 +277,19 @@ app.controller('MainController', function ($scope, $http) {
 
         $.each($scope.myCoinList, function (index, moneta) {
 
-            $.ajax({
-                url: "https://api.coinmarketcap.com/v1/ticker/" + moneta.moneta.CoinName.toLowerCase() + "/?convert=EUR",
-                success: function (result) {
-                    $scope.myCoinList[index].price24 = result[0].percent_change_24h
 
-                    if (index == $scope.myCoinList.length - 1) {
-                        $("#myCoinTableInfo").hide();
-                        $scope.$apply()
-                    }
+            $http.get("https://api.coinmarketcap.com/v1/ticker/" + moneta.moneta.CoinName.toLowerCase() + "/?convert=EUR").success(function (result) {
+                $scope.myCoinList[index].price24 = result[0].percent_change_24h
 
-                },
-                error: function (err) {
-                    alert(err)
+                if (index == $scope.myCoinList.length - 1) {
                     $("#myCoinTableInfo").hide();
                 }
+
+            }).error(function (err) {
+                alert(err)
+                $("#myCoinTableInfo").hide();
             })
+
 
         })
 

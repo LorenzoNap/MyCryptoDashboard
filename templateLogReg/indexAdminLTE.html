@@ -304,7 +304,7 @@
               <ul class="nav nav-stacked">
                 <li><a href="#">Investimento <span class="pull-right badge bg-blue my-label">{{cryptosValuesMoney.totale | currency : '€' : 2}}</span></a></li>
                 <li><a href="#">Guadagni <span class="pull-right badge bg-green my-label">{{cryptosValuesMoney.eur | currency : '€' : 2}}</span></a></li>
-                <li><a href="#">Profit/Loss <span class="pull-right badge my-label" ng-class="{'bg-red' : cryptosValuesMoney.profitLost < 0, 'bg-green': cryptosValuesMoney.profitLost >= 0}">{{cryptosValuesMoney.profitLost}} / {{cryptosValuesMoney.profitLostPerc}}%</span></a></li>
+                <li><a href="#">Profit/Loss <span class="pull-right badge my-label" ng-class="{'bg-red' : cryptosValuesMoney.profitLost < 0, 'bg-green': cryptosValuesMoney.profitLost >= 0}">{{cryptosValuesMoney.profitLost | currency : '€' : 2}} / {{cryptosValuesMoney.profitLostPerc}}%</span></a></li>
               </ul>
             </div>
           </div>
@@ -337,7 +337,7 @@
                     <td><a href="pages/examples/invoice.html">{{coinTable.moneta.Symbol}}</a></td>
                     <td>{{coinTable.eurValue | currency : '€' : 2}}</td>
                     <td>{{coinTable.usdValue | currency : '$' : 2}}</td>
-                    <td><span class="label my-label"  ng-class="{'label-danger':  coinTable.price24 < 0, 'label-info': coinTable.price24 > 0}">{{coinTable.price24}}</span>
+                    <td><span class="label my-label"  ng-class="{'label-danger':  coinTable.price24 < 0, 'label-info': coinTable.price24 > 0}">{{coinTable.price24}}%</span>
                     </td>
                   </tr>
                   </tbody>

@@ -147,7 +147,7 @@
     <section class="content-header">
       <h1>
         Dashboard
-        <small>monete</small>
+        <small>(Refresh ogni 60 sec)</small><small id="lastUpdate"></small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -159,24 +159,13 @@
     <section class="content">
       <!-- Small boxes (Stat box) -->
       <div class="row" id="moneteInfoBoxRow">
-        <!--<div class="col-md-3 col-sm-6 col-xs-12" ng-repeat="moneta in myCoinList">-->
-          <!--<div class="info-box">-->
-            <!--<span class="info-box-icon"><img class="img-responsive" ng-src="https://www.cryptocompare.com{{moneta.moneta.ImageUrl}}"/> </span>-->
 
-            <!--<div class="info-box-content">-->
-              <!--<span class="info-box-text">{{moneta.moneta.Symbol}}</span>-->
-              <!--<span class="info-box-number">Quantita: {{moneta.quantita}}</span>-->
-              <!--&lt;!&ndash;<span class="info-box-number">Valore: {{moneta.quantita}}</span>&ndash;&gt;-->
-              <!--&lt;!&ndash;<span class="info-box-number">Quantita: {{moneta.investimento}}</span>&ndash;&gt;-->
-            <!--</div>-->
-            <!--&lt;!&ndash; /.info-box-content &ndash;&gt;-->
-          <!--</div>-->
-          <!--&lt;!&ndash; /.info-box &ndash;&gt;-->
-        <!--</div>-->
-        <!-- /.col -->
-        <!-- /.col -->
+
+
         <div class="col-md-4" ng-repeat="moneta in myCoinList | orderBy:'-eur'">
           <div class="info-box">
+
+            <!--<div class="coinmarketcap-currency-widget" ng-attr-data-currency="{{moneta.moneta.CoinName | lowercase | replaceSapce}}" data-base="EUR" data-secondary="USD" data-ticker="true" data-rank="false" data-marketcap="false" data-volume="false" data-stats="USD" data-statsticker="false"></div>-->
             <span class="info-box-icon"><img class="img-responsive" ng-src="https://www.cryptocompare.com{{moneta.moneta.ImageUrl}}"/></span>
 
             <div class="info-box-content">
@@ -190,7 +179,7 @@
                     Guadagno: {{moneta.eur | currency : '€' : 2}}
                   </span>
             </div>
-            <!-- /.info-box-content -->
+             <!--/.info-box-content -->
           </div>
         </div>
 
@@ -280,6 +269,46 @@
             <div class="box-body">
               <div class="chart" id="chartPrice">
                 <div id="chartContainer" style="height: 300px"></div>
+              </div>
+            </div>
+            <!-- /.box-body -->
+          </div>
+
+          <div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">Classifica Monete</h3>
+
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <div class="box-body">
+              <div class="table-responsive">
+                <table class="table no-margin" id="example">
+                  <thead>
+                  <tr>
+                    <th>Moneta</th>
+                    <th>Valore $</th>
+                    <th>Market Cap $</th>
+                    <th>Variazione 1h </th>
+                    <th>Variazione 24 </th>
+                    <th>Variazione 7d </th>
+                  </tr>
+                  </thead>
+
+                  <tbody>
+                  <!--<tr ng-repeat="coinTable in classificaCoinMonete">-->
+                    <!--<td>{{coinTable.name}} ({{coinTable.symbol}})</td>-->
+                    <!--<td>{{coinTable.price_usd | currency : '$' : 2}}</td>-->
+                    <!--&lt;!&ndash;<td>{{coinTable.24h_volume_usd }}</td>&ndash;&gt;-->
+                    <!--<td><p  ng-class="{'text-red' : {{coinTable.percent_change_1h}} < 0, 'text-green': {{coinTable.percent_change_1h}} >= 0 }">{{coinTable.percent_change_1h }} %</p></td>-->
+                    <!--<td><p  ng-class="{'text-red' : {{coinTable.percent_change_24h}} < 0, 'text-green': {{coinTable.percent_change_24h}} >= 0 }">{{coinTable.percent_change_24h }} %</p></td>-->
+                    <!--<td><p  ng-class="{'text-red' : {{coinTable.percent_change_7d}} < 0, 'text-green': {{coinTable.percent_change_7d}} >= 0 }">{{coinTable.percent_change_7d }} %</p></td>-->
+                  <!--</tr>-->
+                  </tbody>
+                </table>
               </div>
             </div>
             <!-- /.box-body -->
@@ -415,7 +444,7 @@
       <b>Version</b> 2.4.0
     </div>
     <strong>Copyright &copy; 2014-2016 <a href="https://adminlte.io">Almsaeed Studio</a>.</strong> All rights
-    reserved.
+    reserved. Developed by Lorenzo Nap.
   </footer>
 
   <!-- Control Sidebar -->
@@ -666,6 +695,13 @@
 
 
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.css"/>
+
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>
+
+<script src='/js/currency.js'></script>
 
 
 </body>

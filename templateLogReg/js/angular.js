@@ -1,7 +1,103 @@
-var app = angular.module('app', [ 'ui.bootstrap']);
+var app = angular.module('app', ['ui.bootstrap']);
+
+$( document ).ready(function() {
+    var options2 = {style: 'currency', currency: 'USD'};
+    var numberFormat2 = new Intl.NumberFormat('en-US', options2)
+
+    $('#example').DataTable({
+        "ajax": {
+            "url": "https://api.coinmarketcap.com/v1/ticker/",
+            "dataSrc": ""
+        },
+        "order": [[1, "desc"]],
+        "columns": [
+            {
+                "data": "name",
+                "render": function (data, type, row, meta) {
+                    return data + " (" + row.symbol + ")";
+                }
+            },
+            {
+                "data": "price_usd",
+                "render": function (data, type, row, meta) {
+
+                    return numberFormat2.format(data);
+                }
+            },
+            {
+                "data": "market_cap_usd",
+                "render": function (data, type, row, meta) {
+
+                    return numberFormat2.format(data);
+                }
+            },
+            {
+                "data": "percent_change_1h",
+                "render": function (data, type, row, meta) {
+                    if (data >= 0) {
+                        return '<p class="text-green">' + data + '%</p>'
+                    } else {
+                        return '<p class="text-red">' + data + '%</p>'
+
+                    }
+                }
+            },
+            {
+                "data": "percent_change_24h",
+                "render": function (data, type, row, meta) {
+                    if (data >= 0) {
+                        return '<p class="text-green">' + data + '%</p>'
+                    } else {
+                        return '<p class="text-red">' + data + '%</p>'
+
+                    }
+                }
+            },
+            {
+                "data": "percent_change_7d",
+                "render": function (data, type, row, meta) {
+                    if (data >= 0) {
+                        return '<p class="text-green">' + data + '%</p>'
+                    } else {
+                        return '<p class="text-red">' + data + '%</p>'
+
+                    }
+                }
+            },
+
+        ],
+        "columnDefs": [{
+            "targets": 0,
+            "data": function (row, type, val, meta) {
+                if (type === 'set') {
+                    row.price = val;
+                    // Store the computed display and filter values for efficiency
+                    row.price_display = val == "" ? "" : "$" + numberFormat(val);
+                    row.price_filter = val == "" ? "" : "$" + numberFormat(val) + " " + val;
+                    return;
+                }
+                else if (type === 'display') {
+                    return row.price_display;
+                }
+                else if (type === 'filter') {
+                    return row.price_filter;
+                }
+                // 'sort', 'type' and undefined all just use the integer
+                return row.price;
+            }
+        }]
+    });
+});
 
 
-app.directive('stringToNumber', function ( $filter) {
+
+app.filter('replaceSapce', function () {
+    return function (value) {
+        return value.replace(' ', '-');
+    };
+});
+
+app.directive('stringToNumber', function ($filter) {
     return {
         require: 'ngModel',
         link: function (scope, element, attrs, ngModel) {
@@ -17,8 +113,11 @@ app.directive('stringToNumber', function ( $filter) {
 });
 
 
-
 app.controller('MainController', function ($scope, $http) {
+
+
+    setInterval(function(){ updateCryptos() }, 60000);
+
 
     $(window).resize(function () {
         updateCharPrice($scope.currentMoneta)
@@ -38,13 +137,11 @@ app.controller('MainController', function ($scope, $http) {
     });
 
 
-
-
     $scope.getFornitori = function (val) {
 
         return $http({
             method: 'GET',
-            url: '/coinList?name='+val
+            url: '/coinList?name=' + val
         }).then(function successCallback(response) {
             $scope.arrayFornitori = response.data;
             return response.data.map(function (item) {
@@ -59,6 +156,7 @@ app.controller('MainController', function ($scope, $http) {
     $scope.coinList = [];
     $scope.currentMoneta = "BTC";
     $scope.pieData = [];
+
 
     $scope.cryptosValuesMoney = {eur: 0, usd: 0, totale: 0};
 
@@ -75,7 +173,6 @@ app.controller('MainController', function ($scope, $http) {
     $scope.totalCoinEur = 0;
     $scope.totalCoinUsd = 0;
     $scope.totalCoinInvestimento = 0;
-
 
 
     //Sezione per l'aggiunta di monete
@@ -114,52 +211,50 @@ app.controller('MainController', function ($scope, $http) {
 
     $scope.saveMyCrypto = function () {
 
-         if($("#formSaveMyCoin")[0].checkValidity()){
+        if ($("#formSaveMyCoin")[0].checkValidity()) {
 
-             $http.post('/saveMyCrypto', JSON.stringify($scope.myCoinListTemp)).success(function (response) {
-                 if(response){
+            $http.post('/saveMyCrypto', JSON.stringify($scope.myCoinListTemp)).success(function (response) {
+                if (response) {
 
-                     $.notify({
-                         // options
-                         message: 'Le monete sono state salvate'
-                     },{
-                         // settings
-                         delay: 5000,
-                         type: 'success'
-                     })
+                    $.notify({
+                        // options
+                        message: 'Le monete sono state salvate'
+                    }, {
+                        // settings
+                        delay: 5000,
+                        type: 'success'
+                    })
 
-                     $scope.myCoinList = $scope.myCoinListTemp
-                     $("#addCryptoDialog").modal("hide")
-                     //ricarica le pagine
-                     updateCryptos()
+                    $scope.myCoinList = $scope.myCoinListTemp
+                    $("#addCryptoDialog").modal("hide")
+                    //ricarica le pagine
+                    updateCryptos()
 
 
+                } else {
+                    $.notify({
+                        // options
+                        message: 'Attenzione si è verificato un errore'
+                    }, {
+                        // settings
+                        delay: 5000,
+                        type: 'danger'
+                    })
+                }
 
-                 } else {
-                     $.notify({
-                         // options
-                         message: 'Attenzione si è verificato un errore'
-                     },{
-                         // settings
-                         delay: 5000,
-                         type: 'danger'
-                     })
-                 }
+            })
 
-             })
-
-         } else {
-             $.notify({
-                 // options
-                 message: 'Controlla tutti i campi'
-             },{
-                 // settings
-                 delay: 5000,
-                 z_index: 100000000,
-                 type: 'warning'
-             })
-         }
-
+        } else {
+            $.notify({
+                // options
+                message: 'Controlla tutti i campi'
+            }, {
+                // settings
+                delay: 5000,
+                z_index: 100000000,
+                type: 'warning'
+            })
+        }
 
 
     }
@@ -169,14 +264,12 @@ app.controller('MainController', function ($scope, $http) {
         updateCharPrice(moneta);
     }
 
-
-
-
     updateCryptos();
 
     function updateCryptos() {
 
         $("#myCoinGuadagnoTable").show();
+
 
 
         $scope.cryptosValuesMoney = {eur: 0, usd: 0, totale: 0};
@@ -200,8 +293,8 @@ app.controller('MainController', function ($scope, $http) {
                     $scope.myCoinList = response
                 }
 
-                $('.tableGuadagno > tbody > tr').on('click', function(){
-                    var value =$(this).closest('tr').children('td:first').text();
+                $('.tableGuadagno > tbody > tr').on('click', function () {
+                    var value = $(this).closest('tr').children('td:first').text();
                     updateCharPrice(value)
                 });
 
@@ -240,7 +333,8 @@ app.controller('MainController', function ($scope, $http) {
 
                                     var diff = $scope.cryptosValuesMoney.eur - $scope.cryptosValuesMoney.totale;
                                     var perc = parseFloat((diff * 100) / (parseFloat(Math.round($scope.cryptosValuesMoney.totale * 100) / 100))).toFixed(2)
-                                    if(perc === 'Infinity'){
+
+                                    if (perc == 'Infinity') {
                                         perc = 100
                                     }
 
@@ -270,13 +364,12 @@ app.controller('MainController', function ($scope, $http) {
     function updateCoinInfoTable() {
 
         $("#myCoinTableInfo").show();
-        if($scope.myCoinList.length == 0){
+        if ($scope.myCoinList.length == 0) {
             $("#myCoinTableInfo").hide();
 
         }
 
         $.each($scope.myCoinList, function (index, moneta) {
-
 
             $http.get("https://api.coinmarketcap.com/v1/ticker/" + moneta.moneta.CoinName.toLowerCase() + "/?convert=EUR").success(function (result) {
                 $scope.myCoinList[index].price24 = result[0].percent_change_24h
@@ -321,11 +414,9 @@ app.controller('MainController', function ($scope, $http) {
 
     function updateChartHashRate(moneta) {
 
-        var url= "";
-        if(moneta == "BTC"){
+        var url = "";
+        if (moneta === "BTC") {
             url = "https://api.blockchain.info/pools?cors=true&timespan=48hours"
-        } else {
-
         }
 
 
@@ -340,9 +431,10 @@ app.controller('MainController', function ($scope, $http) {
 
                 })
 
-                function SortByID(x,y) {
+                function SortByID(x, y) {
                     return x.y - y.y;
                 }
+
                 data.sort(SortByID)
 
                 var chart = new CanvasJS.Chart("chartHashRateContainer", {
@@ -404,7 +496,6 @@ app.controller('MainController', function ($scope, $http) {
                     var date = new Date(result.Data[index].time * 1000);
                     dataUSD.push({x: date, y: result.Data[index].close})
                 })
-
 
 
                 $.ajax({
@@ -474,5 +565,6 @@ app.controller('MainController', function ($scope, $http) {
             }
         });
     }
+
 
 })

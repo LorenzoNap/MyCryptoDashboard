@@ -161,7 +161,7 @@ router.post('/saveMyCrypto', function (req, res) {
 
         //svuota prima tutte le monete
 
-        Crypto.remove({}, function (err) {
+        Crypto.remove({ userId: req.session.userId}, function (err) {
             if (err) return handleError(err);
             req.body.forEach(function (value, index) {
                 var crypto = {

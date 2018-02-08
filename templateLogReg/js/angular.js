@@ -332,6 +332,7 @@ app.controller('MainController', function ($scope, $http) {
                                 if (!isNaN($scope.cryptosValuesMoney.eur) && !isNaN($scope.cryptosValuesMoney.totale)) {
 
                                     var diff = $scope.cryptosValuesMoney.eur - $scope.cryptosValuesMoney.totale;
+                                    console.log("Eur: "+$scope.cryptosValuesMoney.eur+" TOTALE: "+ $scope.cryptosValuesMoney.totale + " DIFF : "+diff + " TOFIXED: "+ diff.toFixed(2))
                                     var perc = parseFloat((diff * 100) / (parseFloat(Math.round($scope.cryptosValuesMoney.totale * 100) / 100))).toFixed(2)
 
                                     if (perc == 'Infinity') {

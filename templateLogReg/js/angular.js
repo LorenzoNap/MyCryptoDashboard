@@ -372,7 +372,12 @@ app.controller('MainController', function ($scope, $http) {
 
         $.each($scope.myCoinList, function (index, moneta) {
 
-            $http.get("https://api.coinmarketcap.com/v1/ticker/" + moneta.moneta.CoinName.toLowerCase() + "/?convert=EUR").success(function (result) {
+            var coinName =  moneta.moneta.CoinName.toLowerCase();
+            if(coinName == 'aeoncoin'){
+                coinName = 'aeon';
+            }
+
+            $http.get("https://api.coinmarketcap.com/v1/ticker/" + coinName + "/?convert=EUR").success(function (result) {
                 $scope.myCoinList[index].price24 = result[0].percent_change_24h
 
                 if (index == $scope.myCoinList.length - 1) {

@@ -221,19 +221,19 @@
                   <tr >
                     <th></th>
                     <th></th>
-                    <th><span class="label label-success my-label">{{cryptosValuesMoney.eur | currency : '€' : 2}}</span></th>
-                    <th><span class="label label-success my-label">{{cryptosValuesMoney.usd | currency : '$' : 2}}</span></th>
-                    <th><span class="label label-success my-label">{{cryptosValuesMoney.totale | currency : '€' : 2}}</span></th>
+                    <th><span class="label label-success my-label">{{cryptosValuesMoney.eur | currency : '€' : 4}}</span></th>
+                    <th><span class="label label-success my-label">{{cryptosValuesMoney.usd | currency : '$' : 4}}</span></th>
+                    <th><span class="label label-success my-label">{{cryptosValuesMoney.totale | currency : '€' : 4}}</span></th>
                   </tr>
                   </tfoot>
                   <tbody>
                   <tr ng-repeat="coinTable in myCoinList">
                     <td><a  href="#" ng-click="updateChart(coinTable.moneta.Symbol)">{{coinTable.moneta.Symbol}}</a></td>
                     <td>{{coinTable.quantita}}</td>
-                    <td>{{coinTable.eur | currency : '€' : 2}}</td>
-                    <td>{{coinTable.usd | currency : '$' : 2}}</td>
+                    <td>{{coinTable.eur | currency : '€' : 4}}</td>
+                    <td>{{coinTable.usd | currency : '$' : 4}}</td>
                     <td>
-                      {{coinTable.investimento | currency : '€' : 2}}
+                      {{coinTable.investimento | currency : '€' : 4}}
                     </td>
                   </tr>
                   </tbody>
@@ -364,8 +364,8 @@
                   <tbody>
                   <tr ng-repeat="coinTable in myCoinList">
                     <td><a href="pages/examples/invoice.html">{{coinTable.moneta.Symbol}}</a></td>
-                    <td>{{coinTable.eurValue | currency : '€' : 2}}</td>
-                    <td>{{coinTable.usdValue | currency : '$' : 2}}</td>
+                    <td>{{coinTable.eurValue | currency : '€' : 4}}</td>
+                    <td>{{coinTable.usdValue | currency : '$' : 4}}</td>
                     <td><span class="label my-label"  ng-class="{'label-danger':  coinTable.price24 < 0, 'label-info': coinTable.price24 > 0}">{{coinTable.price24}}%</span>
                     </td>
                   </tr>
